@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../Hit_FoodTrackerApp/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../Hit_FoodTrackerApp/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../Hit_FoodTrackerApp/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../Hit_FoodTrackerApp/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../Hit_FoodTrackerApp/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../Hit_FoodTrackerApp/libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../Hit_FoodTrackerApp/proguard_logs" />
+      </configuration>
+    </facet>
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map />
+        <naming-strategy-map />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/foodTrackerServerSide/rc/costmanagerapp/Config/HnetConfig/hibernate.cfg.xml" />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/il.ac.hit.costmanagerapp/out/production/Hit_ApplicationsCostManager/costmanagerapp/Config/HnetConfig/hibernate.cfg.xml" />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/il.ac.hit.costmanagerapp/out/production/Hit_ApplicationsCostManager/costmanagerapp/lib/Models/hibernate.cfg.xml" />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/il.ac.hit.costmanagerapp/src/costmanagerapp/Config/HnetConfig/hibernate.cfg.xml" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
