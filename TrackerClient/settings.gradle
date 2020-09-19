@@ -1,0 +1,2 @@
+rootProject.name='TrackerClient'
+include ':app'

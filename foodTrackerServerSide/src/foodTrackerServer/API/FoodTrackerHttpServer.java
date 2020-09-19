@@ -216,7 +216,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         int userId = Integer.parseInt(params[params.length - 1]);
         int retailId = Integer.parseInt(retailParams[retailParams.length - 1]);
         try {
-            Collection<Record> transactionsByUser = restModelConnector.getTransactionDAO().getUserRecords(userId);
+            Collection<Record> transactionsByUser = restModelConnector.getRecordsDAO().getUserRecords(userId);
 
             transactionsByUser = transactionsByUser.stream().filter(t -> t.getFoodType().getTypeId() == retailId).collect(Collectors.toList());
             String j = jsonCreator.toJson(transactionsByUser);
@@ -230,8 +230,8 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
 
     private void getFoodTypes(HttpExchange httpExchange) throws UsersPlatformException {
         try {
-            Collection<FoodType> retails = restModelConnector.getRetailDAO().getFoodTypes();
-            responseMessage(httpExchange, 200, jsonCreator.toJson(retails));
+            Collection<FoodType> foodTypes = restModelConnector.getFoodTypeDAO().getFoodTypes();
+            responseMessage(httpExchange, 200, jsonCreator.toJson(foodTypes));
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
         }
@@ -241,7 +241,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         String[] uri = httpExchange.getRequestURI().toString().split("/");
         int id = Integer.parseInt(uri[uri.length - 1]);
         try {
-            Collection<Record> transactionsByUser = restModelConnector.getTransactionDAO().getUserRecords(id);
+            Collection<Record> transactionsByUser = restModelConnector.getRecordsDAO().getUserRecords(id);
             String j = jsonCreator.toJson(transactionsByUser);
             responseMessage(httpExchange, 200, j);
         } catch (UsersPlatformException e) {
@@ -263,7 +263,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
             Date fromDate = format.parse(fromDateStrArray[1]);
             Date toDate = format.parse(toDateStrArray[1]);
 
-            Collection<Record> transactionsByDateRange = restModelConnector.getTransactionDAO().getUserRecords(fromDate, toDate,Integer.parseInt(userId[1]));
+            Collection<Record> transactionsByDateRange = restModelConnector.getRecordsDAO().getUserRecords(fromDate, toDate,Integer.parseInt(userId[1]));
             String j = jsonCreator.toJson(transactionsByDateRange);
             responseMessage(httpExchange, 200, j);
         } catch (UsersPlatformException e) {
@@ -278,7 +278,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         String bodyStr = parseBody(httpExchange);
         Record recordToAdd = initRecord(bodyStr);
         try{
-            restModelConnector.getTransactionDAO().addRecord(recordToAdd);
+            restModelConnector.getRecordsDAO().addRecord(recordToAdd);
             responseMessage(httpExchange, 200, jsonCreator.toJson(recordToAdd));
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 400, jsonCreator.toJson("Transaction's params incorrect"));
@@ -294,7 +294,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         if(recordToAdd.getDateOfRecord() == null)
             recordToAdd.setDateOfRecord(new Date());
         try {
-            recordToAdd.setFoodType(restModelConnector.getRetailDAO().getFoodTypeId(recordToAdd.getFoodType().getTypeId()));
+            recordToAdd.setFoodType(restModelConnector.getFoodTypeDAO().getFoodTypeId(recordToAdd.getFoodType().getTypeId()));
             recordToAdd.setUser(restModelConnector.getUsersDAO().getUser(recordToAdd.getUser().getUserId()));
             return recordToAdd;
         } catch (UsersPlatformException e) {
@@ -347,7 +347,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         String[] uri = httpExchange.getRequestURI().toString().split("/");
         int id = Integer.parseInt(uri[uri.length - 1]);
         try {
-            restModelConnector.getTransactionDAO().deleteRecord(id);
+            restModelConnector.getRecordsDAO().deleteRecord(id);
             responseMessage(httpExchange, 200, "Res : transaction deleted successfully");
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));

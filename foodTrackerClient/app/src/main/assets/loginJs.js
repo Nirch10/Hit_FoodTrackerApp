@@ -2,7 +2,7 @@
 function onLoginSuccess(user){
     initGenerics();
     setLoggedUser(user);
-    initUserTransactions()
+    initUserRecords()
     goToHome();
 }
 

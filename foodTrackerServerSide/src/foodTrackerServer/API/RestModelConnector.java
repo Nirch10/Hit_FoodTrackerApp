@@ -7,22 +7,22 @@ import foodTrackerServer.lib.UsersPlatformException;
 
 public class RestModelConnector {
     private IUsersDAO usersDAO;
-    private IFoodTypeDAO retailDAO;
-    private IRecordDAO transactionDAO;
+    private IFoodTypeDAO foodTypeDAO;
+    private IRecordDAO recordsDAO;
 
-    public RestModelConnector(IUsersDAO usersDAO, IFoodTypeDAO retailDAO, IRecordDAO transactionDAO) throws UsersPlatformException {
-       if(usersDAO == null || retailDAO == null || transactionDAO == null)throw new UsersPlatformException("Invalid DAO");
+    public RestModelConnector(IUsersDAO usersDAO, IFoodTypeDAO foodTypeDAO, IRecordDAO recordsDAO) throws UsersPlatformException {
+       if(usersDAO == null || foodTypeDAO == null || recordsDAO == null)throw new UsersPlatformException("Invalid DAO");
         this.usersDAO = usersDAO;
-        this.retailDAO = retailDAO;
-        this.transactionDAO = transactionDAO;
+        this.foodTypeDAO = foodTypeDAO;
+        this.recordsDAO = recordsDAO;
     }
 
-    public IRecordDAO getTransactionDAO() {
-        return transactionDAO;
+    public IRecordDAO getRecordsDAO() {
+        return recordsDAO;
     }
 
-    public IFoodTypeDAO getRetailDAO() {
-        return retailDAO;
+    public IFoodTypeDAO getFoodTypeDAO() {
+        return foodTypeDAO;
     }
     public IUsersDAO getUsersDAO() {
         return usersDAO;

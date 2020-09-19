@@ -36,5 +36,6 @@ public class FoodType {
         return Name;
     }
     public void setName(String name){Name = name;}
-    public void setTypeId(int id){TypeId = id;}
+    public void setTypeId(int id){
+        TypeId = id;}
 }

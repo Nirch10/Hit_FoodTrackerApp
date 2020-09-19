@@ -6,11 +6,6 @@ option:checked {
     background: red !important;
 }
 
-
-.ui-icon-myicon {
-    background-image: url("../sources/icons/wallet.png");
-    /* Make your icon fit */
-}
 .log-in-de{
     color:#F44336 !important;
 }

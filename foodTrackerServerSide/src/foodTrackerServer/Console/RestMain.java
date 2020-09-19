@@ -6,7 +6,7 @@ import foodTrackerServer.API.RestModelConnector;
 import foodTrackerServer.Config.FoodTrackerServerConfig;
 import foodTrackerServer.Config.FoodTrackerServerConfigWrapper;
 import foodTrackerServer.lib.DAO.HibernateFoodTypeDAO;
-import foodTrackerServer.lib.DAO.HnetMySqlRecordDAO;
+import foodTrackerServer.lib.DAO.HibernateRecordDAO;
 import foodTrackerServer.lib.DAO.HibernateUserDAO;
 import foodTrackerServer.lib.UsersPlatformException;
 
@@ -24,7 +24,7 @@ public class RestMain {
         FoodTrackerServerConfig config = FoodTrackerServerConfigWrapper.Deserialize("./Config.json");
         RestModelConnector restModelConnector =
                 new RestModelConnector(new HibernateUserDAO(config), new HibernateFoodTypeDAO(config),
-                        new HnetMySqlRecordDAO(config));
+                        new HibernateRecordDAO(config));
         AbstractHttpServer server = new FoodTrackerHttpServer(1234, restModelConnector);
         server.start();
         System.out.println("Started serving - port : " + 1234);

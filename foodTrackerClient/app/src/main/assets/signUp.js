@@ -2,13 +2,12 @@ function setSignUpBody(){
     var jsonBody = {};
     jsonBody["UserName"] = $("#new-username-input").val();
     jsonBody["Password"] = $("#new-password-input").val();
-    jsonBody["Email"] = $("#new-email-input").val();
     return jsonBody;
 }
 function signUp(){
     var jsonBodyReq = setSignUpBody();
     $.ajax({
-         url: 'http://'+serverIp +':'+port+'/api/home/signup',
+         url: 'http://'+serverIp +':'+port+'/api/signup',
          type: 'POST',
          dataType: 'json',
           beforeSend: function() {

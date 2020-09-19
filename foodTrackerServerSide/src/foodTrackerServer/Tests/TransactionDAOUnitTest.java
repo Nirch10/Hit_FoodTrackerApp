@@ -20,7 +20,7 @@ public class TransactionDAOUnitTest {
     static IRecordDAO tester;
     @BeforeClass
     public static void testSetup() throws IOException {
-            tester = new HnetMySqlRecordDAO(FoodTrackerServerConfigWrapper.Deserialize("./Config.json"));
+            tester = new HibernateRecordDAO(FoodTrackerServerConfigWrapper.Deserialize("./Config.json"));
     }
     @AfterClass
     public static void testCleanup() {

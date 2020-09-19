@@ -25,7 +25,7 @@ public class Record {
     @Column(name = "Description")
     private String Description;
 
-    public Record(@NotNull int recordId, @NotNull  int calories, @NotNull foodTrackerServer.lib.Models.FoodType foodType, @NotNull  User user,
+    public Record(@NotNull int recordId, int calories, @NotNull foodTrackerServer.lib.Models.FoodType foodType, @NotNull  User user,
                   Date date, String description){
         //TODO::: Generate id automatically
         RecordId = recordId;
@@ -40,7 +40,7 @@ public class Record {
     public int getRecordId() {
         return RecordId;
     }
-    public double getCalories() {
+    public int getCalories() {
         return Calories;
     }
     public foodTrackerServer.lib.Models.FoodType getFoodType() {

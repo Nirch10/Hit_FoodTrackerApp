@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel = "stylesheet" href = "https://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css">
+        <script src = "https://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src = "https://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+        <link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.0/theme-classic/theme-classic.css" />
+        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+        <!-- custom scripts -->
+        <script type = "text/javascript" src="loader.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="loginJs.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="utils.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="records.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="signUp.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="statistics.js" charset="utf-8"></script>
+        <script type = "text/xml" src="../res/values/strings.xml" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" src="settings.css" charset="utf-8"/>
+    </head>
+
+    <body>
+        <div id="login-page" data-role="page" style="background: #007062;color:#CECFD1">
+            <header data-role="header">
+            <h4>Food Tracker</h4>
+            </header>
+            <div data-role="content">
+                <form class="validatedForm" id="log-in-form" method="get" action="">
+                    <fieldset>
+                        <label>User name:<input id="userNameInputLogin" type="text" /></label>
+                        <label>Password:<input name="password" id="passwordInputLogin" type="password"/></label>
+                        <input type="button" id="login-btn" value="Login" style="color:#007062 !important;"/>
+                    </fieldset>
+                </form>
+            </div>
+            <input type="button" id="go-to-sign-up-btn" onclick="goToSignUp()" style="background: #5EE6D5" value="New user? Sign Up"/>
+            <footer data-role="footer" style="bottom:0" data-position="fixed">
+        <h4>Food Tracker &copy; HIT</h4>
+        </footer>
+        </div>
+
+        <div id="sign-up-page" data-role="page" style="background: #007062;color:#CECFD1">
+            <header data-role="header">
+                <h4>Food Tracker</h4>
+            </header>
+            <div data-role="content">
+                <form class="validatedForm" id="commentForm" method="get" action="">
+                    <fieldset>
+                        <label>User name:<input id="new-username-input"  type="text" aria-valuetext="UserName:"/></label>
+                        <label>Password:<input name="password" id="new-password-input" type="password"/></label>
+                        <input type="button" id="sign-up-btn" onclick="signUp()" style="background: #032F71;color:#007062 !important;" value="Sign Up"/>
+                    </fieldset>
+                </form>
+            </div>
+            <input type="button" id="login-page-btn" onclick="goToLogin()" style="background: #5EE6D5" value="Not a new user? Log In!"/>
+            <footer data-role="footer" style="bottom:0" data-position="fixed">
+                <h4>Food Tracker Team &copy; HIT</h4>
+            </footer>
+        </div>
+
+        <div id="home-page" data-role="page" style="background: #007062;color:#CECFD1">
+            <header data-role="header">
+                <h4>Food Tracker</h4>
+                <button onclick="goToHome()" data-icon="home" data-iconpos="notext" ></button>
+                <button onclick="signOut()" data-icon="delete" data-iconpos="notext" ></button>
+            </header>
+            <div data-role="content" >
+                <h3 id="total-calories" style="text-align: center;"> Total calories are : <label id="calories-sum"></label></h3>
+                <input type="button" onclick="goToAddMeal()" value="New Meal Record" style="background: #5EE6D5" id="go-to-add-btn">
+                <input type="button" onclick="goToFoodType()" value="Detailed Page" style="background: #5EE6D5">
+                <div data-role="collapsible-set" data-content-theme="a" id="records-list" style="color:#5EE6D5">
+                </div>
+            </div>
+            <footer data-role="footer" style="bottom:0;" data-position="relative">
+                <h4>Food Tracker Team &copy; HIT</h4>
+            </footer>
+        </div>
+
+        <div id="new-record-page" data-role="page" style="background: #007062;color:#CECFD1">
+            <header data-role="header">
+                <h4>Food Tracker</h4>
+                <button onclick="goToHome()" data-icon="home" data-iconpos="notext" ></button>
+                <button onclick="signOut()" data-icon="delete" data-iconpos="notext" ></button>
+            </header>
+            <div data-role="content">
+                <h3 for="foodTypes-choose-list" style="text-align: center;">Add new meal record</h3>
+                <form>
+                   <select name="foodTypes-choose-list" id="foodTypes-choose-list" inlist="foodTypes" style="text-align:left">
+                       <option value="">Meal's Category</option>
+                   </select>
+                    <input id="calories-input" placeholder="Meal's calories" type="number"/>
+                    <input id="description-input" placeholder="Description of meal" type="text"/>
+                </form>
+                <input type="button" id="add-meal-btn" value="Add" onclick="addMeal()" style="background: #5EE6D5;color:#007062 !important;" />
+            </div>
+            <footer data-role="footer" style="bottom:0" data-position="fixed">
+                <h4>Food Tracker Team &copy; HIT</h4>
+            </footer>
+        </div>
+
+        <div id="type-detailed-page" data-role="page" style="background: #007062;color:#CECFD1">
+            <header data-role="header">
+                <h4>Food Tracker</h4>
+                <button onclick="goToHome()" data-icon="home" data-iconpos="notext" ></button>
+                <button onclick="signOut()" data-icon="delete" data-iconpos="notext" ></button>
+            </header>
+            <div data-role="content">
+                <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+                <form>
+                    <fieldset>
+                        <label for="from-date">From Date :</label>
+                        <input name="startDate" id="from-date" type="date" class="date-picker" />
+                        <label for="to-date">To Date :</label>
+                        <input name="startDate" id="to-date" type="date" class="date-picker" />
+                        <input type="button" onclick="updateChartWithNewDates()" value="Update dates" style="color:#007062 !important;">
+                    </fieldset>
+                </form>
+            </div>
+            <div data-theme="a" data-role="footer" data-position="fixed">
+
+            </div>
+            <footer data-role="footer" style="bottom:0" data-position="relative">
+                <h4>Food Tracker Team &copy; HIT </h4>
+            </footer>
+        </div>
+    </body>
+</html>

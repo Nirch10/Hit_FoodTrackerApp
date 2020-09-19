@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/foodTrackerClient.iml" filepath="$PROJECT_DIR$/foodTrackerClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="foodTracker/app" />
+      <module fileurl="file://$PROJECT_DIR$/foodTracker.iml" filepath="$PROJECT_DIR$/foodTracker.iml" group="foodTracker" />
     </modules>
   </component>
 </project>

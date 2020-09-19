@@ -24,7 +24,7 @@ public class HibernateUserDAO implements IUsersDAO {
     private User userClassType;
     private final String hibernateConfigPath;//`"C:\\code\\Hit_ApplicationsCostManager\\il.ac.hit.costmanagerapp\\out\\production\\il.ac.hit.costmanagerapp\\costmanagerapp\\lib\\Models\\hibernate.cfg.xml";
 
-    public HibernateUserDAO(@NotNull FoodTrackerServerConfig config){this(config,new HibernateDbExecutor<>(), new HnetMySqlRecordDAO(config),  null);}
+    public HibernateUserDAO(@NotNull FoodTrackerServerConfig config){this(config,new HibernateDbExecutor<>(), new HibernateRecordDAO(config),  null);}
     public HibernateUserDAO(@NotNull FoodTrackerServerConfig config, @NotNull IDbExecutor<User> queryExecutor,
                             @NotNull IRecordDAO inputTransactionDAO, AbstractDbConnector connector){
        hibernateConfigPath = config.HibernateConfigPath;

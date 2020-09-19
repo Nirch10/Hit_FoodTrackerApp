@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class HibernateFoodTypeDAO implements IFoodTypeDAO {
-    private String guidColumn = "RecordId";
-    private String tableName = "Record";
+    private String guidColumn = "TypeId";
+    private String tableName = "FoodType";
     private IDbExecutor<FoodType> executor;
     private AbstractDbConnector dbConnector;
     private IRecordDAO transactionDAO;
@@ -23,7 +23,7 @@ public class HibernateFoodTypeDAO implements IFoodTypeDAO {
     private final String filePath;
 
     public HibernateFoodTypeDAO(@NotNull FoodTrackerServerConfig config){this(config,new HibernateDbExecutor<>(),
-            new HnetMySqlRecordDAO(config), null);}
+            new HibernateRecordDAO(config), null);}
     public HibernateFoodTypeDAO(@NotNull FoodTrackerServerConfig config, @NotNull IDbExecutor<FoodType> queryExecutor,
                                 @NotNull IRecordDAO inputTransactionDAO, AbstractDbConnector connector){
         filePath = config.HibernateConfigPath;
