@@ -8,16 +8,13 @@
         <link rel="stylesheet" href="http://demos.jquerymobile.com/1.4.0/theme-classic/theme-classic.css" />
         <script src="http://code.highcharts.com/highcharts.js"></script>
         <script src="http://code.highcharts.com/modules/exporting.js"></script>
-
-        <!-- custom scripts -->
-        <script type = "text/javascript" src="loader.js" charset="utf-8"></script>
-        <script type = "text/javascript" src="loginJs.js" charset="utf-8"></script>
+        <!-- local scripts -->
+        <script type = "text/javascript" src="load.js" charset="utf-8"></script>
+        <script type = "text/javascript" src="user.js" charset="utf-8"></script>
         <script type = "text/javascript" src="utils.js" charset="utf-8"></script>
         <script type = "text/javascript" src="records.js" charset="utf-8"></script>
-        <script type = "text/javascript" src="signUp.js" charset="utf-8"></script>
         <script type = "text/javascript" src="statistics.js" charset="utf-8"></script>
         <script type = "text/xml" src="../res/values/strings.xml" charset="utf-8"></script>
-        <link rel="stylesheet" type="text/css" src="settings.css" charset="utf-8"/>
     </head>
 
     <body>
@@ -28,13 +25,16 @@
             <div data-role="content">
                 <form class="validatedForm" id="log-in-form" method="get" action="">
                     <fieldset>
-                        <label>User name:<input id="userNameInputLogin" type="text" /></label>
-                        <label>Password:<input name="password" id="passwordInputLogin" type="password"/></label>
-                        <input type="button" id="login-btn" value="Login" style="color:#007062 !important;"/>
+                        <label>User name:<input id="userNameInputLogin" type="text"/></label>
+                        <label>Password:<input id="passwordInputLogin" type="password"/></label>
+                        <input type="button" id="login-btn" value="Login" onclick="login()" style="color:#007062 !important;"/>
                     </fieldset>
                 </form>
             </div>
-            <input type="button" id="go-to-sign-up-btn" onclick="goToSignUp()" style="background: #5EE6D5" value="New user? Sign Up"/>
+            <div>
+                <label id="wrong-cred-lbl" style="visibility:hidden">Invalid userName or password</label>
+            </div>
+            <input type="button" id="go-to-sign-up-btn" onclick="goToSignUp()" style="bottom:0!important;background: #5EE6D5" value="New user? Sign Up"/>
             <footer data-role="footer" style="bottom:0" data-position="fixed">
         <h4>Food Tracker &copy; HIT</h4>
         </footer>
@@ -47,11 +47,14 @@
             <div data-role="content">
                 <form class="validatedForm" id="commentForm" method="get" action="">
                     <fieldset>
-                        <label>User name:<input id="new-username-input"  type="text" aria-valuetext="UserName:"/></label>
-                        <label>Password:<input name="password" id="new-password-input" type="password"/></label>
+                        <label>User name:<input id="new-username-input"  type="text"/></label>
+                        <label>Password:<input id="new-password-input" type="password"/></label>
                         <input type="button" id="sign-up-btn" onclick="signUp()" style="background: #032F71;color:#007062 !important;" value="Sign Up"/>
                     </fieldset>
                 </form>
+            </div>
+            <div>
+                <label id="wrong-new-user" style="visibility:hidden">Extremley Sorry, could not sign you up. check your filled data and try again..</label>
             </div>
             <input type="button" id="login-page-btn" onclick="goToLogin()" style="background: #5EE6D5" value="Not a new user? Log In!"/>
             <footer data-role="footer" style="bottom:0" data-position="fixed">
@@ -92,6 +95,9 @@
                     <input id="calories-input" placeholder="Meal's calories" type="number"/>
                     <input id="description-input" placeholder="Description of meal" type="text"/>
                 </form>
+                <div>
+                    <label id="wrong-meal-added" style="visibility:hidden">Error in Request (cheating on your calories count?)</label>
+                </div>
                 <input type="button" id="add-meal-btn" value="Add" onclick="addMeal()" style="background: #5EE6D5;color:#007062 !important;" />
             </div>
             <footer data-role="footer" style="bottom:0" data-position="fixed">
@@ -113,10 +119,14 @@
                         <input name="startDate" id="from-date" type="date" class="date-picker" />
                         <label for="to-date">To Date :</label>
                         <input name="startDate" id="to-date" type="date" class="date-picker" />
-                        <input type="button" onclick="updateChartWithNewDates()" value="Update dates" style="color:#007062 !important;">
+                        <div>
+                            <label id="wrong-charts-update" style="visibility:hidden">Error in Request (missing a date?)</label>
+                        </div>
+                        <input type="button" onclick="updateChartWithNewDates()" value="update charts" style="color:#007062 !important;">
                     </fieldset>
                 </form>
             </div>
+
             <div data-theme="a" data-role="footer" data-position="fixed">
 
             </div>

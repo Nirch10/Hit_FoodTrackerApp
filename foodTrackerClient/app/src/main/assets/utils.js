@@ -5,11 +5,17 @@ records = [];
 var serverIp = 0;
 var port = 0;
 
-function initGenerics(){
+function initLoad(){
     caloriesSum = 0;
-    document.getElementById("calories-sum").innerHTML = caloriesSum;
-    records = []
     loggedUser = [];
+    records = []
+    document.getElementById("calories-sum").innerHTML = caloriesSum;
+    document.getElementById("wrong-cred-lbl").style.visibility = 'hidden';
+    document.getElementById("userNameInputLogin").value = '';
+    document.getElementById("passwordInputLogin").value = '';
+    document.getElementById("wrong-charts-update").style.visibility = 'hidden';
+    document.getElementById("wrong-meal-added").style.visibility = 'hidden';
+    document.getElementById("wrong-new-user").style.visibility = 'hidden';
 }
 
 function addNewRecordCalories(calories){
@@ -17,8 +23,8 @@ function addNewRecordCalories(calories){
     document.getElementById("calories-sum").innerHTML = caloriesSum;
 }
 
-function load(serverIpAddr, portNum){
-    serverIp = serverIpAddr;
+function load(server_ip, portNum){
+    serverIp = server_ip;
     port = portNum;
 }
 
@@ -58,60 +64,8 @@ function initFoodTypes(){
     });
 };
 
-function initUserRecords(){
-   $.when(getAllUserRecords()).done(function(results){
-        results.forEach(function(res){
-            var viewedT = setRecordForView(res);
-            addToRecordsListView("records-list",viewedT);
-                addNewRecordCalories(res.Calories);
-        });
-        return results;
-});
-};
-
-function setRecordForView(res){
-    var toView = {};
-    toView["RecordId"] = res.RecordId;
-    toView["Calories"] = res.Calories;
-    toView["Description"] = res.Description;
-    toView["FoodType"] = res.FoodType.Name;
-    toView["Date"] = res.DateOfRecord;
-    return toView;
-}
-
-function addToRecordsListView(id, item){
-  var html = ' <div data-role="collapsible" id="'+item.RecordId
-  +'" data-collapsed="true" >'
-  +'<h3><label style="text-align:left;color:#007062 !important;">'
-  +item.FoodType+' : </label><label style="color:#007062 !important;">' + item.Calories+'</label></h3>'
-  +'<p style="color:#5EE6D5 !important;">Date :       '+ item.Date+'</p>'
-  +'<p style="color:#5EE6D5 !important;">Description : '+ item.Description+'</p>'
-  $("#"+id).append(html).collapsibleset('refresh');
-}
-
-function getAllUserRecords(){
-    return $.when($.ajax({
-         url: 'http://'+serverIp+':'+port+'/api/home/getuserrecords/' + loggedUser.UserId,
-         type: 'GET',
-         dataType: 'json',
-          beforeSend: function() {
-                     $.mobile.showPageLoadingMsg(true);
-                 },
-                 complete: function() {
-                     $.mobile.hidePageLoadingMsg();
-                 },
-         }).then(function(res){
-         return res;}));
-};
-
-function addToDL(id,array){
-    var options = '';
-    for(var i = 0; i < array.length; i++)
-        options += '<option id="'+array[i].TypeId+'Exp" label="'+array[i].Name +'" value="'+array[i].TypeId+'">'+array[i].Name+'</option>';
-    document.getElementById(id).innerHTML = options;
-};
 function signOut(){
-    initGenerics();
+    initLoad();
     $("#records-list").empty();
     goToLogin();
 }

@@ -138,11 +138,12 @@ function getTransactionsByDateAndUpdate(fromDate, toDate){
              },
      success: function(data, textStatus, jqXHR){
            onGetByDatesSuccess(data);
+           document.getElementById("wrong-charts-update").style.visibility = 'hidden';
      },
      error: function(a,b,c) {
-          console.log('something went wrong1:',a);
-          console.log('something went wrong2:',b);
-          console.log('something went wrong:3',c);
+        $.mobile.hidePageLoadingMsg();
+        document.getElementById("wrong-charts-update").style.visibility = 'visible';
+          console.log('Error occurred',a);
      }
    });
 }
