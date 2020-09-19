@@ -31,7 +31,7 @@ function login(){
 }
 
 function onLoginSuccess(user){
-    initGenerics();
+    initLoad();
     setLoggedUser(user);
     initUserRecords()
     goToHome();

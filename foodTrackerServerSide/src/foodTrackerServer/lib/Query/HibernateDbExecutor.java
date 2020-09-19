@@ -1,4 +1,4 @@
-package foodTrackerServer.lib.QueryUtils;
+package foodTrackerServer.lib.Query;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -41,7 +41,7 @@ public class HibernateDbExecutor<T> implements IDbExecutor<T> {
         }
     }
     @Override
-    public Boolean TryExecuteInsertQuery(AbstractDbConnector connector, T insertObj) {
+    public Boolean tryExecuteInsertQuery(AbstractDbConnector connector, T insertObj) {
         try{
             session.save(insertObj);
             session.getTransaction().commit();
@@ -52,7 +52,7 @@ public class HibernateDbExecutor<T> implements IDbExecutor<T> {
         }
     }
     @Override
-    public Boolean TryExecuteUpdateQuery(AbstractDbConnector connector, T updateObj) {
+    public Boolean tryExecuteUpdateQuery(AbstractDbConnector connector, T updateObj) {
         try {
             session.merge(updateObj);
             session.getTransaction().commit();
@@ -63,7 +63,7 @@ public class HibernateDbExecutor<T> implements IDbExecutor<T> {
         }
     }
     @Override
-    public Boolean TryExecuteDeleteQuery(AbstractDbConnector connector, T deleteObj) {
+    public Boolean tryExecuteDeleteQuery(AbstractDbConnector connector, T deleteObj) {
         try{
         session.delete(deleteObj);
         session.flush();

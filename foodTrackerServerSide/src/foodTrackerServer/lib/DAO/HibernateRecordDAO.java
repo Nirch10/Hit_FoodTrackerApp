@@ -1,17 +1,16 @@
 package foodTrackerServer.lib.DAO;
 
 import com.sun.istack.internal.NotNull;
-import foodTrackerServer.Config.FoodTrackerServerConfig;
+import foodTrackerServer.Config.FoodTrackerConfig;
 import foodTrackerServer.lib.Models.FoodType;
 import foodTrackerServer.lib.Models.Record;
 import foodTrackerServer.lib.Models.User;
-import foodTrackerServer.lib.QueryUtils.AbstractDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbExecutor;
-import foodTrackerServer.lib.QueryUtils.IDbExecutor;
+import foodTrackerServer.lib.Query.AbstractDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbExecutor;
+import foodTrackerServer.lib.Query.IDbExecutor;
 import foodTrackerServer.lib.UsersPlatformException;
 import org.hibernate.Hibernate;
-
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -29,8 +28,8 @@ public class HibernateRecordDAO implements IRecordDAO {
     private Record recordClass;
     private final String configFilePath;
 
-    public HibernateRecordDAO(@NotNull FoodTrackerServerConfig config) {this(config, new HibernateDbExecutor() ,null);}
-    public HibernateRecordDAO(@NotNull FoodTrackerServerConfig config, @NotNull IDbExecutor iQueryExecuter,
+    public HibernateRecordDAO(@NotNull FoodTrackerConfig config) {this(config, new HibernateDbExecutor() ,null);}
+    public HibernateRecordDAO(@NotNull FoodTrackerConfig config, @NotNull IDbExecutor iQueryExecuter,
                               AbstractDbConnector abstractDbConnector){
         configFilePath = config.HibernateConfigPath;
         executor = iQueryExecuter;
@@ -52,12 +51,12 @@ public class HibernateRecordDAO implements IRecordDAO {
         return results;
     }
     @Override
-    public Record getRecord(int transactionGuid) throws UsersPlatformException {
-        String stringQuery = ("SELECT * FROM " + recordsTableName + " WHERE "+ recordIdColName +"=" + transactionGuid);
+    public Record getRecord(int recordId) throws UsersPlatformException {
+        String stringQuery = ("SELECT * FROM " + recordsTableName + " WHERE "+ recordIdColName +"=" + recordId);
 
         Collection<Record> results = getRecords(stringQuery);
         if(results == null)throw new UsersPlatformException("Query result was null");
-        if(results.size() <= 0) throw new UsersPlatformException("Transaction {"+transactionGuid + "} was not found");
+        if(results.size() <= 0) throw new UsersPlatformException("Record {"+recordId + "} was not found");
         return results.stream().findFirst().get();
     }
     @Override
@@ -68,11 +67,11 @@ public class HibernateRecordDAO implements IRecordDAO {
         return records;
     }
     @Override
-    public Collection<Record> getFoodTypeRecords(int retailGuid) throws UsersPlatformException{
-        String stringQuery = ("SELECT * FROM " + recordsTableName + " WHERE "+ foodTypeIdColName +"=" + retailGuid);
-        Collection transactions = getRecords(stringQuery);
-        if (transactions == null) throw new UsersPlatformException("Query result was null");
-        return transactions;
+    public Collection<Record> getFoodTypeRecords(int foodTypeIp) throws UsersPlatformException{
+        String stringQuery = ("SELECT * FROM " + recordsTableName + " WHERE "+ foodTypeIdColName +"=" + foodTypeIp);
+        Collection records = getRecords(stringQuery);
+        if (records == null) throw new UsersPlatformException("Query result was null");
+        return records;
     }
     @Override
     public Collection<Record> getUserRecords(Date from, Date to, int userGuid) throws UsersPlatformException {
@@ -84,46 +83,46 @@ public class HibernateRecordDAO implements IRecordDAO {
         return records;
     }
     @Override
-    public void setRecordDate(int transactionGuid, Date newDate) throws UsersPlatformException, SQLException {
-        Record record = getRecord(transactionGuid);
-        if(record == null)throw new UsersPlatformException("Transaction {"+transactionGuid+"} was not found");
+    public void setRecordDate(int recordId, Date newDate) throws UsersPlatformException, SQLException {
+        Record record = getRecord(recordId);
+        if(record == null)throw new UsersPlatformException("record {"+recordId+"} was not found");
         record.setDateOfRecord(newDate);
         executor.openConnection(dbConnector);
-        executor.TryExecuteUpdateQuery(dbConnector, record);
+        executor.tryExecuteUpdateQuery(dbConnector, record);
         executor.closeConnection();
     }
     @Override
     public void setRecordFoodType(int recordId, FoodType newFoodType) throws UsersPlatformException, SQLException {
         Record record = getRecord(recordId);
-        if(record == null)throw new UsersPlatformException("Transaction {"+recordId+"} was not found");
+        if(record == null)throw new UsersPlatformException("Record {"+recordId+"} was not found");
         record.setFoodType(newFoodType);
         executor.openConnection(dbConnector);
-        executor.TryExecuteUpdateQuery(dbConnector, record);
+        executor.tryExecuteUpdateQuery(dbConnector, record);
         executor.closeConnection();
 
     }
     @Override
     public void setRecordUser(int recordId, User newUser) throws UsersPlatformException, SQLException {
         Record record = getRecord(recordId);
-        if(record == null)throw new UsersPlatformException("Transaction {"+recordId+"} was not found");
+        if(record == null)throw new UsersPlatformException("Record {"+recordId+"} was not found");
         record.setUser(newUser);
         executor.openConnection(dbConnector);
-        executor.TryExecuteUpdateQuery(dbConnector, record);
+        executor.tryExecuteUpdateQuery(dbConnector, record);
         executor.closeConnection();
     }
     @Override
     public void addRecord(Record record) throws SQLException, UsersPlatformException {
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteInsertQuery(dbConnector, record);
+        boolean resultsFlag = executor.tryExecuteInsertQuery(dbConnector, record);
         executor.closeConnection();
-        if (!resultsFlag) throw new UsersPlatformException("Could not update Retail");
+        if (!resultsFlag) throw new UsersPlatformException("Could not update");
     }
     @Override
-    public void deleteRecord(int transactionGuid) throws UsersPlatformException{
-        Record record = getRecord(transactionGuid);
-        if(record == null)throw new UsersPlatformException("Transaction {"+transactionGuid + "} not found");
+    public void deleteRecord(int recordId) throws UsersPlatformException{
+        Record record = getRecord(recordId);
+        if(record == null)throw new UsersPlatformException("Record {"+recordId + "} not found");
         executor.openConnection(dbConnector);
-        executor.tryExecuteWildCardQuery("DELETE FROM Transaction WHERE "+ recordIdColName +" = " + record.getRecordId());
+        executor.tryExecuteWildCardQuery("DELETE FROM "+recordsTableName+" WHERE "+ recordIdColName +" = " + record.getRecordId());
         executor.closeConnection();
     }
 }

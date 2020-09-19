@@ -1,7 +1,7 @@
 package foodTrackerServer.Tests;
 
 import com.mysql.jdbc.AssertionFailedException;
-import foodTrackerServer.Config.FoodTrackerServerConfigWrapper;
+import foodTrackerServer.Config.FoodTrackerConfigWrapper;
 import foodTrackerServer.lib.DAO.HibernateUserDAO;
 import foodTrackerServer.lib.DAO.IUsersDAO;
 import foodTrackerServer.lib.Models.User;
@@ -10,8 +10,6 @@ import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,11 +19,10 @@ public class UserDAOTest {
     static IUsersDAO tester;
     @BeforeClass
     public static void testSetup() throws IOException {
-            tester = new HibernateUserDAO(FoodTrackerServerConfigWrapper.Deserialize("./Config.json"));
+            tester = new HibernateUserDAO(FoodTrackerConfigWrapper.Deserialize("./Config.json"));
     }
     @AfterClass
     public static void testCleanup() {
-        // Do your cleanup here like close URL connection , releasing resources etc
     }
     //Get Tests
     @Test
@@ -35,32 +32,20 @@ public class UserDAOTest {
     @Test
     public void testGetAllUsers() throws UsersPlatformException {
         Collection<User> users = tester.getUsers();
-        if (users.size() == 0) throw new AssertionError("empty list");
-        users.forEach(u -> System.out.println(u.getUserId() + " : " + u.getUserName() ));
+        if (users.size() == 0) throw new AssertionError("no users");
     }
-    @Test
-    public void testGetUsersOneByOne() throws UsersPlatformException {
-        Collection<User> users = tester.getUsers();
-        users.forEach(user -> {
-            try {
-                testGetUser(user.getUserId());
-            } catch (UsersPlatformException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+
     private void testGetUser(int userGuid) throws UsersPlatformException {
         User res;
         res= tester.getUser(userGuid);
         if (res == null) throw new AssertionError("User not found");
-        System.out.println(res.getUserId() + " : " + res.getUserName());
     }
     //Insert Tests
     @Test
     public void testInsertUser() {
         Scanner scanner = new Scanner(System.in);
-        String[] names = {"None","Achi", "Oren", "Haim"};
-        String[] passwords= {"***","abc", "  ", "abc 123"};
+        String[] names = {"None","Royi", "Ran", "Haim"};
+        String[] passwords= {"***","111", "222", "abc123"};
         for (int i =0;i< names.length;i++) {
             try {
                 tester.addUser(new User(names[i],passwords[i])) ;
@@ -74,7 +59,7 @@ public class UserDAOTest {
     //Delete Tests
     @Test
     public void testDeleteUser(){
-        int userGuid = 6;
+        int userGuid = 2;
         try {
             User u = tester.getUser(userGuid);
             if (u == null) throw new ValueException("User doesnt exist");
@@ -95,7 +80,6 @@ public class UserDAOTest {
             if (tester.getUser(userGuid) == null) throw new AssertionFailedException(new Exception("User was not found"));
             tester.setPassword(userGuid, newPass);
             User u1 = tester.getUser(userGuid);
-            if (u1.getPassword() == newPass) throw new AssertionFailedException(new Exception("Did not change password"));
         } catch (UsersPlatformException e) {
             throw new AssertionError(e.getMessage());
         } catch (SQLException e) {

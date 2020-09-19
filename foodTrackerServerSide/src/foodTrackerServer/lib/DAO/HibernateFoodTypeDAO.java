@@ -1,13 +1,13 @@
 package foodTrackerServer.lib.DAO;
 
 import com.sun.istack.internal.NotNull;
-import foodTrackerServer.Config.FoodTrackerServerConfig;
+import foodTrackerServer.Config.FoodTrackerConfig;
 import foodTrackerServer.lib.Models.FoodType;
 import foodTrackerServer.lib.Models.Record;
-import foodTrackerServer.lib.QueryUtils.AbstractDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbExecutor;
-import foodTrackerServer.lib.QueryUtils.IDbExecutor;
+import foodTrackerServer.lib.Query.AbstractDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbExecutor;
+import foodTrackerServer.lib.Query.IDbExecutor;
 import foodTrackerServer.lib.UsersPlatformException;
 import java.io.File;
 import java.sql.SQLException;
@@ -22,9 +22,9 @@ public class HibernateFoodTypeDAO implements IFoodTypeDAO {
     private FoodType FoodType;
     private final String filePath;
 
-    public HibernateFoodTypeDAO(@NotNull FoodTrackerServerConfig config){this(config,new HibernateDbExecutor<>(),
+    public HibernateFoodTypeDAO(@NotNull FoodTrackerConfig config){this(config,new HibernateDbExecutor<>(),
             new HibernateRecordDAO(config), null);}
-    public HibernateFoodTypeDAO(@NotNull FoodTrackerServerConfig config, @NotNull IDbExecutor<FoodType> queryExecutor,
+    public HibernateFoodTypeDAO(@NotNull FoodTrackerConfig config, @NotNull IDbExecutor<FoodType> queryExecutor,
                                 @NotNull IRecordDAO inputTransactionDAO, AbstractDbConnector connector){
         filePath = config.HibernateConfigPath;
         executor = queryExecutor;
@@ -37,56 +37,56 @@ public class HibernateFoodTypeDAO implements IFoodTypeDAO {
     }
 
     @Override
-    public FoodType getFoodTypeId(@NotNull int retailGuid) throws UsersPlatformException {
+    public FoodType getFoodTypeId(@NotNull int foodTypeId) throws UsersPlatformException {
         executor.openConnection(dbConnector);
         Collection<FoodType> queryResults = executor.tryExecuteGetQuery(dbConnector,
-                "SELECT * FROM " + tableName + " WHERE "+guidColumn+"=" + retailGuid, FoodType.getClass());
+                "SELECT * FROM " + tableName + " WHERE "+guidColumn+"=" + foodTypeId, FoodType.getClass());
         executor.closeConnection();
 
         if (queryResults == null)throw new UsersPlatformException("Query result was null");
-        if (queryResults.size() <= 0)throw new UsersPlatformException("Retail does not exist");
+        if (queryResults.size() <= 0)throw new UsersPlatformException("type does not exist");
 
         return queryResults.stream().findFirst().get();
     }
     @Override
     public Collection<FoodType> getFoodTypes() throws UsersPlatformException {
         executor.openConnection(dbConnector);
-        Collection<FoodType> retails = executor.tryExecuteGetQuery(dbConnector, "SELECT * FROM " + tableName, FoodType.getClass());
+        Collection<FoodType> foodTypes = executor.tryExecuteGetQuery(dbConnector, "SELECT * FROM " + tableName, FoodType.getClass());
         executor.closeConnection();
-        if (retails == null)throw new UsersPlatformException("Query result was null");
+        if (foodTypes == null)throw new UsersPlatformException("Query result was null");
 
-        return retails;
+        return foodTypes;
     }
     @Override
-    public void setFoodTypeName(@NotNull int retailGuid, @NotNull String retailNewName) throws UsersPlatformException, SQLException {
-        if(retailGuid == 1)throw new UsersPlatformException("Cant update None object");
-        FoodType foodTypeToSet = getFoodTypeId(retailGuid);
-        if(foodTypeToSet == null)throw new UsersPlatformException("Retail {"+retailGuid + "} not found");
-        foodTypeToSet.setName(retailNewName);
+    public void setFoodTypeName(@NotNull int foodTypeId, @NotNull String typeName) throws UsersPlatformException, SQLException {
+        if(foodTypeId == 1)throw new UsersPlatformException("Cant update None object");
+        FoodType foodTypeToSet = getFoodTypeId(foodTypeId);
+        if(foodTypeToSet == null)throw new UsersPlatformException("type {"+foodTypeId + "} not found");
+        foodTypeToSet.setName(typeName);
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteUpdateQuery(dbConnector, foodTypeToSet);
+        boolean resultsFlag = executor.tryExecuteUpdateQuery(dbConnector, foodTypeToSet);
         executor.closeConnection();
-        if(!resultsFlag)throw new UsersPlatformException("Could not update Retail {" + retailGuid + "} name");
+        if(!resultsFlag)throw new UsersPlatformException("Could not update type: {" + foodTypeId + "} name");
     }
     @Override
     public void addFoodType(@NotNull FoodType foodType) throws UsersPlatformException, SQLException {
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteInsertQuery(dbConnector, foodType);
+        boolean resultsFlag = executor.tryExecuteInsertQuery(dbConnector, foodType);
         executor.closeConnection();
-        if (!resultsFlag) throw new UsersPlatformException("Could not Insert new Retail");
+        if (!resultsFlag) throw new UsersPlatformException("Error Inserting new Type");
     }
     @Override
-    public void deleteFoodType(@NotNull int retailGuid) throws UsersPlatformException, SQLException {
-        FoodType rt = getFoodTypeId(retailGuid);
-        if(rt.getName() == "None" || retailGuid == 1)throw new UsersPlatformException("Cant delete the none object");
-        FoodType noneRetail = getFoodTypeId(1);
-        if(noneRetail == null)noneRetail = new FoodType(1,"None");
-        for (Record record : transactionDAO.getFoodTypeRecords(rt.getTypeId())) {
-            transactionDAO.setRecordFoodType(record.getRecordId(), noneRetail);
+    public void deleteFoodType(@NotNull int foodTypeId) throws UsersPlatformException, SQLException {
+        FoodType t = getFoodTypeId(foodTypeId);
+        if(t.getName() == "None" || foodTypeId == 1)throw new UsersPlatformException("Cant delete the none object");
+        FoodType emptyType = getFoodTypeId(1);
+        if(emptyType == null)emptyType = new FoodType(1,"None");
+        for (Record record : transactionDAO.getFoodTypeRecords(t.getTypeId())) {
+            transactionDAO.setRecordFoodType(record.getRecordId(), emptyType);
         }
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteDeleteQuery(dbConnector,rt);
+        boolean resultsFlag = executor.tryExecuteDeleteQuery(dbConnector,t);
         executor.closeConnection();
-        if (!resultsFlag) throw new UsersPlatformException("Could not delete Retail {"+retailGuid+"}");
+        if (!resultsFlag) throw new UsersPlatformException("Error deleting type {"+foodTypeId+"}");
     }
 }

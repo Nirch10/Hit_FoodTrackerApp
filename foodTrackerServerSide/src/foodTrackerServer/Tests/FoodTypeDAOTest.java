@@ -1,6 +1,6 @@
 package foodTrackerServer.Tests;
 
-import foodTrackerServer.Config.FoodTrackerServerConfigWrapper;
+import foodTrackerServer.Config.FoodTrackerConfigWrapper;
 import foodTrackerServer.lib.DAO.HibernateFoodTypeDAO;
 import foodTrackerServer.lib.DAO.IFoodTypeDAO;
 import foodTrackerServer.lib.Models.FoodType;
@@ -17,7 +17,7 @@ public class FoodTypeDAOTest {
     static IFoodTypeDAO tester;
     @BeforeClass
     public static void testSetup() throws IOException {
-        tester = new HibernateFoodTypeDAO(FoodTrackerServerConfigWrapper.Deserialize("./Config.json"));
+        tester = new HibernateFoodTypeDAO(FoodTrackerConfigWrapper.Deserialize("./Config.json"));
     }
     @AfterClass
     public static void testCleanup() {
@@ -59,36 +59,34 @@ public class FoodTypeDAOTest {
             try{
                 tester.addFoodType(new FoodType(retailNames[i]));
             } catch (UsersPlatformException e) {
-                throw new AssertionError("Retail insertion failure");
+                throw new AssertionError("Type insertion failed");
             } catch (SQLException e) {
-                throw new AssertionError("Retail insertion failure");
+                throw new AssertionError("Type insertion failed");
             }
         }
     }
     //Delete Tests
     @Test
-    public void testDeleteRetail(){
-        int retailGuid = 4;
+    public void testRemoveFoodType(){
         try {
-            for(int i = 5;i<13;i++)
+            for(int i = 2;i<10;i++)
                 tester.deleteFoodType(i);
         } catch (UsersPlatformException e) {
-            throw new AssertionError("Could not delete retail, " + e.getMessage());
+            throw new AssertionError(e.getMessage());
         } catch (SQLException e) {
-            throw new AssertionError("Could not delete retail, " + e.getMessage());
+            throw new AssertionError(e.getMessage());
         }
     }
     //Update tests
     @Test
-    public void testUpdateRetail(){
-        int retailGuid = 1;
+    public void testUpdateFoodType(){
         String retailsNewName = "None";
         try {
-            tester.setFoodTypeName(retailGuid,retailsNewName);
+            tester.setFoodTypeName(1,retailsNewName);
         } catch (SQLException e) {
-            throw new AssertionError("Could not update retails name" + e.getMessage());
+            throw new AssertionError(e.getMessage());
         } catch (UsersPlatformException e) {
-            throw new AssertionError("Could not update retails name" + e.getMessage());
+            throw new AssertionError(e.getMessage());
         }
     }
 }

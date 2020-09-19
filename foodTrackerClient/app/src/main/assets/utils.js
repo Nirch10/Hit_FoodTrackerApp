@@ -10,9 +10,11 @@ function initLoad(){
     loggedUser = [];
     records = []
     document.getElementById("calories-sum").innerHTML = caloriesSum;
-    document.getElementById("wrong-cred-lbl").style.visibility = 'hidden';
     document.getElementById("userNameInputLogin").value = '';
     document.getElementById("passwordInputLogin").value = '';
+    document.getElementById("calories-input").value = '';
+    document.getElementById("description-input").value = '';
+    document.getElementById("wrong-cred-lbl").style.visibility = 'hidden';
     document.getElementById("wrong-charts-update").style.visibility = 'hidden';
     document.getElementById("wrong-meal-added").style.visibility = 'hidden';
     document.getElementById("wrong-new-user").style.visibility = 'hidden';

@@ -1,13 +1,13 @@
 package foodTrackerServer.lib.DAO;
 
 import com.sun.istack.internal.NotNull;
-import foodTrackerServer.Config.FoodTrackerServerConfig;
+import foodTrackerServer.Config.FoodTrackerConfig;
 import foodTrackerServer.lib.Models.Record;
 import foodTrackerServer.lib.Models.User;
-import foodTrackerServer.lib.QueryUtils.AbstractDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbConnector;
-import foodTrackerServer.lib.QueryUtils.HibernateDbExecutor;
-import foodTrackerServer.lib.QueryUtils.IDbExecutor;
+import foodTrackerServer.lib.Query.AbstractDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbConnector;
+import foodTrackerServer.lib.Query.HibernateDbExecutor;
+import foodTrackerServer.lib.Query.IDbExecutor;
 import foodTrackerServer.lib.UsersPlatformException;
 import java.io.File;
 import java.sql.SQLException;
@@ -22,10 +22,10 @@ public class HibernateUserDAO implements IUsersDAO {
     private AbstractDbConnector dbConnector;
     private IRecordDAO transactionDAO;
     private User userClassType;
-    private final String hibernateConfigPath;//`"C:\\code\\Hit_ApplicationsCostManager\\il.ac.hit.costmanagerapp\\out\\production\\il.ac.hit.costmanagerapp\\costmanagerapp\\lib\\Models\\hibernate.cfg.xml";
+    private final String hibernateConfigPath;
 
-    public HibernateUserDAO(@NotNull FoodTrackerServerConfig config){this(config,new HibernateDbExecutor<>(), new HibernateRecordDAO(config),  null);}
-    public HibernateUserDAO(@NotNull FoodTrackerServerConfig config, @NotNull IDbExecutor<User> queryExecutor,
+    public HibernateUserDAO(@NotNull FoodTrackerConfig config){this(config,new HibernateDbExecutor<>(), new HibernateRecordDAO(config),  null);}
+    public HibernateUserDAO(@NotNull FoodTrackerConfig config, @NotNull IDbExecutor<User> queryExecutor,
                             @NotNull IRecordDAO inputTransactionDAO, AbstractDbConnector connector){
        hibernateConfigPath = config.HibernateConfigPath;
         executor = queryExecutor;
@@ -71,7 +71,7 @@ public class HibernateUserDAO implements IUsersDAO {
     @Override
     public void addUser(User user) throws UsersPlatformException, SQLException {
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteInsertQuery(dbConnector, user);
+        boolean resultsFlag = executor.tryExecuteInsertQuery(dbConnector, user);
         executor.closeConnection();
         if (!resultsFlag) throw new UsersPlatformException("Could not insert new user");
     }
@@ -88,7 +88,7 @@ public class HibernateUserDAO implements IUsersDAO {
             transactionDAO.setRecordUser(record.getRecordId(),noneUser);
         }
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteDeleteQuery(dbConnector,user);
+        boolean resultsFlag = executor.tryExecuteDeleteQuery(dbConnector,user);
         executor.closeConnection();
         if (!resultsFlag) throw new UsersPlatformException("Could not delete user {" + userGuid + "}");
     }
@@ -98,7 +98,7 @@ public class HibernateUserDAO implements IUsersDAO {
         User user = getUser(userGuid);
         user.setPassword(newPassword);
         executor.openConnection(dbConnector);
-        boolean resultsFlag = executor.TryExecuteUpdateQuery(dbConnector, user);
+        boolean resultsFlag = executor.tryExecuteUpdateQuery(dbConnector, user);
         executor.closeConnection();
         if(!resultsFlag) throw new UsersPlatformException("Could not update Retail");
     }

@@ -8,13 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity
-@Table(appliesTo = "FoodType")
 public class FoodType {
-    @Id @GeneratedValue
-    @Column(name = "FoodTypeId")
     private int TypeId;
-    @Column(name = "Name")
     private String Name;
 
     public FoodType(int typeId, @NotNull String name){

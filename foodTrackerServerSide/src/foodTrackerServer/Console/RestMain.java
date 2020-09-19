@@ -3,8 +3,8 @@ package foodTrackerServer.Console;
 import foodTrackerServer.API.AbstractHttpServer;
 import foodTrackerServer.API.FoodTrackerHttpServer;
 import foodTrackerServer.API.RestModelConnector;
-import foodTrackerServer.Config.FoodTrackerServerConfig;
-import foodTrackerServer.Config.FoodTrackerServerConfigWrapper;
+import foodTrackerServer.Config.FoodTrackerConfig;
+import foodTrackerServer.Config.FoodTrackerConfigWrapper;
 import foodTrackerServer.lib.DAO.HibernateFoodTypeDAO;
 import foodTrackerServer.lib.DAO.HibernateRecordDAO;
 import foodTrackerServer.lib.DAO.HibernateUserDAO;
@@ -20,14 +20,13 @@ public class RestMain {
     public static void main(String args[]) throws IOException, UsersPlatformException {
         Path currentRelativePath = Paths.get("");
         String s = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Current relative path is: " + s);
-        FoodTrackerServerConfig config = FoodTrackerServerConfigWrapper.Deserialize("./Config.json");
+        FoodTrackerConfig config = FoodTrackerConfigWrapper.Deserialize("./Config.json");
         RestModelConnector restModelConnector =
                 new RestModelConnector(new HibernateUserDAO(config), new HibernateFoodTypeDAO(config),
                         new HibernateRecordDAO(config));
-        AbstractHttpServer server = new FoodTrackerHttpServer(1234, restModelConnector);
+        AbstractHttpServer server = new FoodTrackerHttpServer(config.Port, restModelConnector);
         server.start();
-        System.out.println("Started serving - port : " + 1234);
+        System.out.println("serving on port: " + config.Port);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         br.readLine();
     }

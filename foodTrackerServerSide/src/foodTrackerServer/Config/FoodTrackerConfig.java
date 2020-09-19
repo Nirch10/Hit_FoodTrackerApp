@@ -1,7 +1,8 @@
 package foodTrackerServer.Config;
 
-public class FoodTrackerServerConfig {
+public class FoodTrackerConfig {
     public String HibernateConfigPath;
+    public int Port;
 }
 
 

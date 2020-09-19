@@ -1,4 +1,4 @@
-package foodTrackerServer.lib.QueryUtils;
+package foodTrackerServer.lib.Query;
 
 import org.hibernate.Session;
 

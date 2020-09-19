@@ -26,14 +26,13 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
-    private static Collection<Record> records;
     private RestModelConnector restModelConnector;
     private static OutputStream outputStream;
     private Gson jsonCreator;
 
     //C'tors
-    public FoodTrackerHttpServer(@NotNull int portNum, IUsersDAO usersDAO, IFoodTypeDAO retailDAO, IRecordDAO transactionDAO) throws UsersPlatformException {
-        this(portNum ,new RestModelConnector(usersDAO, retailDAO, transactionDAO));
+    public FoodTrackerHttpServer(@NotNull int portNum, IUsersDAO usersDAO, IFoodTypeDAO foodTypeDAO, IRecordDAO recordDAO) throws UsersPlatformException {
+        this(portNum ,new RestModelConnector(usersDAO, foodTypeDAO, recordDAO));
     }
 
     public FoodTrackerHttpServer(int portNum, RestModelConnector restModelConnector) {
@@ -41,7 +40,6 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
         jsonCreator = builder.create();
-        records = new ArrayList<>();
         this.restModelConnector = restModelConnector;
     }
 
@@ -123,8 +121,6 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
                 getUserRecords(httpExchange);
             else if (uri.toLowerCase().contains("/api/home/getfoodtypes"))
                 getFoodTypes(httpExchange);
-            else if (uri.toLowerCase().contains("api/home/getfoodtypesrecords"))
-                getFoodTypeRecords(httpExchange);
             else if (uri.toLowerCase().contains("api/home/getrecordsbydate"))
                 getRecordsByDate(httpExchange);
             else
@@ -204,30 +200,6 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
     }
 
     //Get Api Methods
-    private void getFoodTypeRecords(HttpExchange httpExchange) throws UsersPlatformException {
-        String[] uriParams = httpExchange.getRequestURI().getQuery().split("&");
-        String[] params = uriParams[0].split("=");
-        String[] retailParams = uriParams[1].split("=");
-        if(!(params[0].toLowerCase().equals("userid") && retailParams[0].toLowerCase().equals("retailid")))
-        {
-            responseMessage(httpExchange, 400, "WrongUriParams");
-            return;
-        }
-        int userId = Integer.parseInt(params[params.length - 1]);
-        int retailId = Integer.parseInt(retailParams[retailParams.length - 1]);
-        try {
-            Collection<Record> transactionsByUser = restModelConnector.getRecordsDAO().getUserRecords(userId);
-
-            transactionsByUser = transactionsByUser.stream().filter(t -> t.getFoodType().getTypeId() == retailId).collect(Collectors.toList());
-            String j = jsonCreator.toJson(transactionsByUser);
-            responseMessage(httpExchange, 200, j);
-        } catch (UsersPlatformException e) {
-            responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
-        } catch (Exception e) {
-            responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
-        }
-    }
-
     private void getFoodTypes(HttpExchange httpExchange) throws UsersPlatformException {
         try {
             Collection<FoodType> foodTypes = restModelConnector.getFoodTypeDAO().getFoodTypes();
@@ -241,8 +213,8 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         String[] uri = httpExchange.getRequestURI().toString().split("/");
         int id = Integer.parseInt(uri[uri.length - 1]);
         try {
-            Collection<Record> transactionsByUser = restModelConnector.getRecordsDAO().getUserRecords(id);
-            String j = jsonCreator.toJson(transactionsByUser);
+            Collection<Record> userRecords = restModelConnector.getRecordsDAO().getUserRecords(id);
+            String j = jsonCreator.toJson(userRecords);
             responseMessage(httpExchange, 200, j);
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
@@ -263,8 +235,8 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
             Date fromDate = format.parse(fromDateStrArray[1]);
             Date toDate = format.parse(toDateStrArray[1]);
 
-            Collection<Record> transactionsByDateRange = restModelConnector.getRecordsDAO().getUserRecords(fromDate, toDate,Integer.parseInt(userId[1]));
-            String j = jsonCreator.toJson(transactionsByDateRange);
+            Collection<Record> recordsByDate = restModelConnector.getRecordsDAO().getUserRecords(fromDate, toDate,Integer.parseInt(userId[1]));
+            String j = jsonCreator.toJson(recordsByDate);
             responseMessage(httpExchange, 200, j);
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
@@ -281,14 +253,14 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
             restModelConnector.getRecordsDAO().addRecord(recordToAdd);
             responseMessage(httpExchange, 200, jsonCreator.toJson(recordToAdd));
         } catch (UsersPlatformException e) {
-            responseMessage(httpExchange, 400, jsonCreator.toJson("Transaction's params incorrect"));
+            responseMessage(httpExchange, 400, jsonCreator.toJson("record's incorrect"));
         } catch (SQLException e) {
-            responseMessage(httpExchange, 400, jsonCreator.toJson("Transaction's params incorrect"));
+            responseMessage(httpExchange, 400, jsonCreator.toJson("records's incorrect"));
         }
     }
 
-    private Record initRecord(String transactionJsonString) {
-        Record recordToAdd = jsonCreator.fromJson(transactionJsonString, Record.class);
+    private Record initRecord(String recordJsonStr) {
+        Record recordToAdd = jsonCreator.fromJson(recordJsonStr, Record.class);
         if(recordToAdd == null)
             return null;
         if(recordToAdd.getDateOfRecord() == null)
@@ -348,7 +320,7 @@ public class FoodTrackerHttpServer extends AbstractHttpServer<Record> {
         int id = Integer.parseInt(uri[uri.length - 1]);
         try {
             restModelConnector.getRecordsDAO().deleteRecord(id);
-            responseMessage(httpExchange, 200, "Res : transaction deleted successfully");
+            responseMessage(httpExchange, 200, "Res : record deleted successfully");
         } catch (UsersPlatformException e) {
             responseMessage(httpExchange, 404, jsonCreator.toJson(e.getMessage()));
         } catch (SQLException e) {

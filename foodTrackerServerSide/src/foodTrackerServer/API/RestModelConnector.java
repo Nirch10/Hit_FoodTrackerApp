@@ -20,7 +20,6 @@ public class RestModelConnector {
     public IRecordDAO getRecordsDAO() {
         return recordsDAO;
     }
-
     public IFoodTypeDAO getFoodTypeDAO() {
         return foodTypeDAO;
     }
