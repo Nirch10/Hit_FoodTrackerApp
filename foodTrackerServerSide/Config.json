@@ -1,3 +1,4 @@
 {
 "HibernateConfigPath":"/Users/sapirchodorov/git_projects/hit/Hit_FoodTrackerApp/foodTrackerServerSide/out/production/foodTrackerServerSide/foodTrackerServer/lib/Models/hibernate.cfg.xml",
-"Port":1234}
+"Port":1234,
+}
